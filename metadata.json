@@ -1,0 +1,8 @@
+{
+  "name": "Remix AriaKeys",
+  "description": "Interactive piano atelier and studio featuring real-time waterfall visualization, polyphonic playable keybed, curated repertoire, and performance telemetry.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
