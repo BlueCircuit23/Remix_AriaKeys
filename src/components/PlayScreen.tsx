@@ -29,6 +29,7 @@ interface PlayScreenProps {
   selectedPatch?: InstrumentPatch;
   onPatchChange?: (patch: InstrumentPatch) => void;
   bluetoothConfig?: BluetoothLatencyConfig;
+  onViewPartitura?: (recording: RecordedPerformance) => void;
 }
 
 const TIME_SIG_BEATS: Record<TimeSignature, { count: number; defaultAccents: boolean[] }> = {
@@ -101,6 +102,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({
   selectedPatch: propSelectedPatch,
   onPatchChange: propOnPatchChange,
   bluetoothConfig,
+  onViewPartitura,
 }) => {
   // Sound Engine state
   const [selectedPatch, setSelectedPatch] = useState<InstrumentPatch>(
@@ -1360,6 +1362,7 @@ export const PlayScreen: React.FC<PlayScreenProps> = ({
         patch={selectedPatch}
         songTitle={currentSong.title}
         onViewInLibrary={onNavigateToLibrary}
+        onViewPartitura={onViewPartitura}
       />
 
       {/* Studio Acoustics & Audio FX Modal */}

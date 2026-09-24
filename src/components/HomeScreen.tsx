@@ -19,7 +19,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onOpenProfile,
   onOpenStudioDrawer,
 }) => {
-  const currentSong = REPERTOIRE_SONGS[0]; // Clair de Lune
+  const currentSong = REPERTOIRE_SONGS[0] || {
+    id: 'free-atelier',
+    title: 'Free Atelier Mode',
+    composer: 'AriaKeys Studio',
+    collection: 'Live Improvisation',
+    key: 'C Maj',
+    bpm: 120,
+    duration: '0:00',
+    difficulty: 'Beginner',
+    genre: 'Free Play',
+    artworkUrl: 'https://images.unsplash.com/photo-1520523839896-5aa428257cc2?q=80&w=300&auto=format&fit=crop',
+    altText: 'Piano studio free play',
+    totalBars: 32,
+    currentBar: 1,
+    masteryPct: 0,
+    pitchPrecision: 100,
+    tempoStability: 100,
+    notesSequence: []
+  };
   const [activeModal, setActiveModal] = useState<'harmonic' | 'acoustic' | 'moreOptions' | null>(null);
   const [calibrating, setCalibrating] = useState(false);
   const [detectedPitch, setDetectedPitch] = useState<string | null>(null);

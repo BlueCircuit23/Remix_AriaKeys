@@ -14,6 +14,7 @@ interface SaveRecordingModalProps {
   patch: InstrumentPatch;
   songTitle?: string;
   onViewInLibrary?: () => void;
+  onViewPartitura?: (recording: RecordedPerformance) => void;
 }
 
 export const SaveRecordingModal: React.FC<SaveRecordingModalProps> = ({
@@ -27,11 +28,13 @@ export const SaveRecordingModal: React.FC<SaveRecordingModalProps> = ({
   patch,
   songTitle = 'Live Practice',
   onViewInLibrary,
+  onViewPartitura,
 }) => {
   const [title, setTitle] = useState('');
   const [isPlayingPreview, setIsPlayingPreview] = useState(false);
   const [playbackProgress, setPlaybackProgress] = useState(0);
   const [isSavedSuccessfully, setIsSavedSuccessfully] = useState(false);
+  const [savedPerformanceRef, setSavedPerformanceRef] = useState<RecordedPerformance | null>(null);
   const previewTimeoutsRef = useRef<number[]>([]);
 
   useEffect(() => {
@@ -115,6 +118,7 @@ export const SaveRecordingModal: React.FC<SaveRecordingModalProps> = ({
     };
 
     onSave(newRecord);
+    setSavedPerformanceRef(newRecord);
     setIsSavedSuccessfully(true);
   };
 
@@ -181,30 +185,45 @@ export const SaveRecordingModal: React.FC<SaveRecordingModalProps> = ({
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                onClick={handleDownloadMidi}
-                className="py-2.5 px-3.5 rounded-xl bg-[#272a30] hover:bg-[#32353b] text-[#ffbd58] border border-[#ffbd58]/30 font-headline text-[13px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                type="button"
-                title="Download .MID standard MIDI file"
-              >
-                <span className="material-symbols-outlined text-[18px]">download</span>
-                <span>Download .MID</span>
-              </button>
-              <button
-                onClick={() => {
-                  onClose();
-                  if (onViewInLibrary) onViewInLibrary();
-                }}
-                className="flex-1 py-2.5 rounded-xl bg-[#00d2ff] hover:bg-[#45d1f6] text-[#001f28] font-headline text-[13px] font-extrabold flex items-center justify-center gap-1.5 shadow-[0_0_16px_rgba(0,210,255,0.4)] cursor-pointer"
-                type="button"
-              >
-                <span className="material-symbols-outlined text-[18px]">library_music</span>
-                View in Library
-              </button>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleDownloadMidi}
+                  className="py-2.5 px-3 rounded-xl bg-[#272a30] hover:bg-[#32353b] text-[#ffbd58] border border-[#ffbd58]/30 font-headline text-[13px] font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
+                  type="button"
+                  title="Download .MID standard MIDI file"
+                >
+                  <span className="material-symbols-outlined text-[16px]">download</span>
+                  <span>MIDI</span>
+                </button>
+                <button
+                  onClick={() => {
+                    if (savedPerformanceRef && onViewPartitura) {
+                      onViewPartitura(savedPerformanceRef);
+                    }
+                  }}
+                  className="py-2.5 px-3 rounded-xl bg-[#272a30] hover:bg-[#32353b] text-[#00d2ff] border border-[#00d2ff]/30 font-headline text-[13px] font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
+                  type="button"
+                  title="View Sheet Music Score (Partitura)"
+                >
+                  <span className="material-symbols-outlined text-[16px]">queue_music</span>
+                  <span>Partitura</span>
+                </button>
+                <button
+                  onClick={() => {
+                    onClose();
+                    if (onViewInLibrary) onViewInLibrary();
+                  }}
+                  className="flex-1 py-2.5 rounded-xl bg-[#00d2ff] hover:bg-[#45d1f6] text-[#001f28] font-headline text-[13px] font-extrabold flex items-center justify-center gap-1 shadow-[0_0_16px_rgba(0,210,255,0.4)] cursor-pointer"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[16px]">library_music</span>
+                  Library
+                </button>
+              </div>
               <button
                 onClick={onClose}
-                className="px-3.5 py-2.5 rounded-xl bg-[#272a30] hover:bg-[#32353b] text-[#e1e2ea] font-headline text-[13px] font-semibold cursor-pointer"
+                className="w-full py-2 rounded-xl bg-[#272a30] hover:bg-[#32353b] text-[#e1e2ea] font-headline text-[12px] font-semibold cursor-pointer"
                 type="button"
               >
                 Done

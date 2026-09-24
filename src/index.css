@@ -11,8 +11,8 @@
     width: 100%;
     margin: 0;
     padding: 0;
-    background-color: #111319;
-    color: #e1e2ea;
+    background-color: #08090d;
+    color: #f1f2f6;
     font-family: var(--font-sans);
     overscroll-behavior: none;
     -webkit-font-smoothing: antialiased;
@@ -27,7 +27,7 @@
   }
 
   .pb-safe {
-    padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 12px);
   }
 
   .pt-safe {
@@ -56,17 +56,42 @@
 .no-scrollbar::-webkit-scrollbar,
 ::-webkit-scrollbar {
   display: none;
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
+/* Minimalist Glass Card */
+.glass-panel {
+  background: rgba(18, 20, 28, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.glass-panel-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel-hover:hover {
+  background: rgba(24, 27, 38, 0.85);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
 /* Keybed press animations & glows */
 .piano-glow-cyan {
-  box-shadow: 0 0 24px rgba(0, 210, 255, 0.65), inset 0 0 8px rgba(0, 210, 255, 0.35);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), inset 0 0 6px rgba(0, 212, 255, 0.3);
 }
 
 .piano-glow-amber {
-  box-shadow: 0 0 20px rgba(255, 189, 88, 0.65), inset 0 0 6px rgba(255, 189, 88, 0.35);
+  box-shadow: 0 0 20px rgba(255, 190, 80, 0.5), inset 0 0 6px rgba(255, 190, 80, 0.3);
 }
+

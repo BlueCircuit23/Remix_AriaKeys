@@ -11,6 +11,7 @@ interface LibraryScreenProps {
   onDeleteRecording?: (id: string) => void;
   onPlayRecordingInStudio?: (recording: RecordedPerformance) => void;
   onNavigateToPlay?: () => void;
+  onViewPartitura?: (recording: RecordedPerformance) => void;
 }
 
 export const LibraryScreen: React.FC<LibraryScreenProps> = ({
@@ -19,6 +20,7 @@ export const LibraryScreen: React.FC<LibraryScreenProps> = ({
   onDeleteRecording,
   onPlayRecordingInStudio,
   onNavigateToPlay,
+  onViewPartitura,
 }) => {
   const [activeView, setActiveView] = useState<'repertoire' | 'recordings'>('repertoire');
   const [searchQuery, setSearchQuery] = useState('');
@@ -164,7 +166,7 @@ export const LibraryScreen: React.FC<LibraryScreenProps> = ({
     return `${String(mins).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
-  const editorsPick = songs.find((s) => s.isEditorPick) || songs[1];
+  const editorsPick = songs.find((s) => s.isEditorPick) || songs[1] || songs[0] || null;
 
   return (
     <div className="flex flex-col w-full max-w-xl mx-auto pb-28 pt-1">
@@ -495,12 +497,26 @@ export const LibraryScreen: React.FC<LibraryScreenProps> = ({
                       {/* MIDI File (.mid) Direct Export */}
                       <button
                         onClick={() => downloadMidiFile(rec)}
-                        className="py-1.5 px-3 rounded-xl bg-[#272a30] hover:bg-[#32353b] text-[#00d2ff] border border-[#00d2ff]/30 font-headline text-[12px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                        className="py-1.5 px-2.5 rounded-xl bg-[#272a30] hover:bg-[#32353b] text-[#00d2ff] border border-[#00d2ff]/30 font-headline text-[12px] font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
                         type="button"
                         title="Download standard .mid file to your computer"
                       >
-                        <span className="material-symbols-outlined text-[16px]">download</span>
+                        <span className="material-symbols-outlined text-[15px]">download</span>
                         <span>MIDI</span>
+                      </button>
+
+                      {/* View Sheet Music Score (Partitura) */}
+                      <button
+                        onClick={() => {
+                          stopAudioPlayback();
+                          if (onViewPartitura) onViewPartitura(rec);
+                        }}
+                        className="py-1.5 px-2.5 rounded-xl bg-[#272a30] hover:bg-[#32353b] text-[#ffbd58] border border-[#ffbd58]/30 font-headline text-[12px] font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
+                        type="button"
+                        title="View Sheet Music Score (Partitura)"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">queue_music</span>
+                        <span>Partitura</span>
                       </button>
 
                       <button
@@ -533,7 +549,7 @@ export const LibraryScreen: React.FC<LibraryScreenProps> = ({
       {activeView === 'repertoire' && (
         <>
           {/* Curated / Trending Banner (Editor's Pick) */}
-          {selectedGenre === 'All Genres' && !searchQuery && (
+          {selectedGenre === 'All Genres' && !searchQuery && editorsPick && (
             <section className="px-4 mt-4">
               <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#272a30] via-[#1d2025] to-[#0b0e13] border border-[#232e42] p-4 shadow-xl">
                 <div className="absolute -right-12 -top-12 w-48 h-48 rounded-full bg-[#00d2ff]/10 blur-3xl pointer-events-none" />

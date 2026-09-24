@@ -53,6 +53,34 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
   // Flash indicator for visual feedback
   const [isVisualFlashing, setIsVisualFlashing] = useState<boolean>(false);
+  const [userName, setUserName] = useState<string>(() => {
+    return localStorage.getItem('ariakeys_user_name') || USER_PROFILE.name;
+  });
+  const [userEmail, setUserEmail] = useState<string>(() => {
+    return localStorage.getItem('ariakeys_user_email') || 'mitiendadeshopify2026@gmail.com';
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
+    return localStorage.getItem('ariakeys_is_logged_in') !== 'false';
+  });
+  const [isEditingProfile, setIsEditingProfile] = useState<boolean>(false);
+  const [tempName, setTempName] = useState<string>(userName);
+  const [tempEmail, setTempEmail] = useState<string>(userEmail);
+
+  const handleSaveProfile = (e: React.FormEvent) => {
+    e.preventDefault();
+    setUserName(tempName);
+    setUserEmail(tempEmail);
+    setIsLoggedIn(true);
+    setIsEditingProfile(false);
+    localStorage.setItem('ariakeys_user_name', tempName);
+    localStorage.setItem('ariakeys_user_email', tempEmail);
+    localStorage.setItem('ariakeys_is_logged_in', 'true');
+  };
+
+  const handleSignOut = () => {
+    setIsLoggedIn(false);
+    localStorage.setItem('ariakeys_is_logged_in', 'false');
+  };
   const [lastKeyTriggered, setLastKeyTriggered] = useState<string>('Space');
   const [lastInputSource, setLastInputSource] = useState<string>('Keyboard');
   const [testToneEnabled, setTestToneEnabled] = useState<boolean>(true);
@@ -308,29 +336,124 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           </button>
         </div>
 
-        {/* User Identity Card */}
-        <div className="flex items-center gap-3.5 bg-[#0b0e13] p-3 rounded-2xl border border-[#232e42]">
-          <img
-            alt="Alex Profile"
-            className="w-12 h-12 rounded-full object-cover ring-2 ring-[#00d2ff]"
-            src={USER_PROFILE.avatarUrl}
-          />
-          <div className="flex flex-col min-w-0 flex-1">
-            <div className="flex items-center justify-between">
-              <span className="font-headline text-[15px] font-bold text-[#e1e2ea] truncate">
-                {USER_PROFILE.name}
-              </span>
-              <span className="px-2 py-0.5 rounded-full bg-[#ea9f00]/20 text-[#ffbd58] font-telemetry text-[10px] font-bold">
-                {INITIAL_STATS.currentGrade}
-              </span>
-            </div>
-            <span className="font-sans text-[12px] text-[#bbc9cf] truncate">
-              mitiendadeshopify2026@gmail.com
-            </span>
-            <span className="font-telemetry text-[10px] text-[#00d2ff] mt-0.5">
-              14-Day Streak • 48.5h Logged
-            </span>
-          </div>
+        {/* User Identity & Account Card */}
+        <div className="bg-[#0b0e13] p-3.5 rounded-2xl border border-[#232e42] space-y-3">
+          {isLoggedIn ? (
+            <>
+              <div className="flex items-center gap-3.5">
+                <img
+                  alt="User Profile"
+                  className="w-12 h-12 rounded-full object-cover ring-2 ring-[#00d2ff]"
+                  src={USER_PROFILE.avatarUrl}
+                />
+                <div className="flex flex-col min-w-0 flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-headline text-[15px] font-bold text-[#e1e2ea] truncate">
+                      {userName}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-[#ea9f00]/20 text-[#ffbd58] font-telemetry text-[10px] font-bold">
+                      {INITIAL_STATS.currentGrade}
+                    </span>
+                  </div>
+                  <span className="font-sans text-[12px] text-[#bbc9cf] truncate">
+                    {userEmail}
+                  </span>
+                  <span className="font-telemetry text-[10px] text-[#00d2ff] mt-0.5">
+                    14-Day Streak • 48.5h Logged
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons: Edit / Sign Out */}
+              <div className="flex items-center justify-between pt-2 border-t border-[#1d2331] text-xs">
+                <button
+                  onClick={() => setIsEditingProfile(!isEditingProfile)}
+                  className="text-[#00d2ff] hover:underline font-bold flex items-center gap-1"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[14px]">edit</span>
+                  {isEditingProfile ? 'Cancel Edit' : 'Edit Profile'}
+                </button>
+                <button
+                  onClick={handleSignOut}
+                  className="text-red-400 hover:underline font-bold flex items-center gap-1"
+                  type="button"
+                >
+                  <span className="material-symbols-outlined text-[14px]">logout</span>
+                  Sign Out
+                </button>
+              </div>
+
+              {/* Edit Profile Form */}
+              {isEditingProfile && (
+                <form onSubmit={handleSaveProfile} className="space-y-2.5 pt-2 border-t border-[#1d2331]">
+                  <div>
+                    <label className="block text-[10px] font-telemetry text-[#859399] uppercase mb-1">Your Name</label>
+                    <input
+                      type="text"
+                      value={tempName}
+                      onChange={(e) => setTempName(e.target.value)}
+                      className="w-full bg-[#181b24] border border-[#2d3748] rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#00d2ff]"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-telemetry text-[#859399] uppercase mb-1">Email Address</label>
+                    <input
+                      type="email"
+                      value={tempEmail}
+                      onChange={(e) => setTempEmail(e.target.value)}
+                      className="w-full bg-[#181b24] border border-[#2d3748] rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#00d2ff]"
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full py-1.5 rounded-lg bg-[#00d2ff] text-[#001f28] font-bold text-xs hover:bg-[#45d1f6] transition-all"
+                  >
+                    Save Changes
+                  </button>
+                </form>
+              )}
+            </>
+          ) : (
+            <form onSubmit={handleSaveProfile} className="space-y-3">
+              <div className="flex items-center gap-2 border-b border-[#232e42] pb-2">
+                <span className="material-symbols-outlined text-[#00d2ff] text-[20px]">account_circle</span>
+                <h4 className="font-headline text-sm font-bold text-white">Sign In to AriaKeys Atelier</h4>
+              </div>
+              <div className="space-y-2">
+                <div>
+                  <label className="block text-[10px] font-telemetry text-[#859399] uppercase mb-1">Name</label>
+                  <input
+                    type="text"
+                    value={tempName}
+                    onChange={(e) => setTempName(e.target.value)}
+                    placeholder="Enter your name"
+                    className="w-full bg-[#181b24] border border-[#2d3748] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00d2ff]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-telemetry text-[#859399] uppercase mb-1">Email</label>
+                  <input
+                    type="email"
+                    value={tempEmail}
+                    onChange={(e) => setTempEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="w-full bg-[#181b24] border border-[#2d3748] rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00d2ff]"
+                    required
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="w-full py-2 rounded-xl bg-[#00d2ff] hover:bg-[#45d1f6] text-[#001f28] font-headline text-xs font-bold transition-all shadow-[0_0_12px_rgba(0,210,255,0.3)] cursor-pointer"
+              >
+                Sign In / Start Session
+              </button>
+            </form>
+          )}
         </div>
 
         {/* HARDWARE & AUDIO TELEMETRY SECTION (Updated with Measured Round-Trip) */}
